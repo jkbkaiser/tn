@@ -1,9 +1,9 @@
 use home::home_dir;
 use std::path::PathBuf;
 
-pub mod compiler;
 pub mod config;
 pub mod crawler;
+pub mod generator;
 pub mod server;
 
 // TODO make this configurable

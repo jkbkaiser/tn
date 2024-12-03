@@ -1,23 +1,26 @@
 // TODO:
-// - Make as executable everywhere
 // - File navigation
-// - Extract template, compilation, cache
+// - Extract generation, cache
 // - Hot reloading with cache in ~/.tn
 // - Print error msg when not found https://docs.rs/axum/latest/axum/error_handling/index.html
 // - (Support both absolute and relative paths in config)
 use clap::Parser;
 use std::path::{Path, PathBuf};
 
-use tn::compiler::Compiler;
 use tn::config::Config;
 use tn::crawler;
+use tn::generator::Generator;
 use tn::server::{Server, ServerOpt};
 
+/// Tn is tool that can parse and serve markdown files.
+/// Parsed files are served alongside other assets e.g. .css files, images, etc.
+/// The file `index.nav` in the root of the project tells tn what to dislpay in the navbar.
+/// This file also has a markdown format.
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(version, verbatim_doc_comment, about, long_about = None)]
 struct Args {
     /// Path to the configuration file
-    #[arg(short, long, default_value = "./config.toml")]
+    #[arg(short, long, default_value = "./tn.toml")]
     config: PathBuf,
 
     /// Port on which to serve content
@@ -34,7 +37,7 @@ async fn main() -> miette::Result<()> {
     let config = Config::parse(Path::new(&args.config))?;
     let files = crawler::crawl(&config.src)?;
 
-    let root = Compiler::new(config.src, cache_dir, config.name).compile(files)?;
+    let root = Generator::new(config.src, cache_dir, config.name).generate(files)?;
     Server::new(ServerOpt::new(args.port, root, config.assets.unwrap()))
         .serve()
         .await

@@ -1,6 +1,6 @@
 # This is the index
 
-[test](./blabla/a.html)
+[test](./blabla/a.md)
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id gravida odio. In maximus justo et elit ultricies, ut elementum lectus egestas. Maecenas non massa quis odio elementum fringilla. Nam malesuada est et interdum pharetra. Cras aliquam sapien eget nulla tincidunt egestas. Duis rhoncus at lorem sed mollis. Donec eu diam blandit, blandit nisl ut, euismod augue.
 
