@@ -59,17 +59,20 @@ fn create_page(elements: String) -> String {
 
 pub struct Compiler {
     src: PathBuf,
-    dst: PathBuf,
+    cache: PathBuf,
+    name: String,
 }
 
 impl Compiler {
-    pub fn new(src: PathBuf, dst: PathBuf) -> Self {
-        Self { src, dst }
+    pub fn new(src: PathBuf, cache: PathBuf, name: String) -> Self {
+        Self { src, cache, name }
     }
 
-    pub fn compile(self, files: Vec<CrawledFile>) -> Result<()> {
-        if !self.dst.is_dir() {
-            fs::create_dir_all(&self.dst).into_diagnostic()?;
+    pub fn compile(self, files: Vec<CrawledFile>) -> Result<PathBuf> {
+        let project_cache = self.cache.join(self.name);
+
+        if !project_cache.is_dir() {
+            fs::create_dir_all(&project_cache).into_diagnostic()?;
         }
 
         let base_component_count = self.src.components().count();
@@ -78,7 +81,7 @@ impl Compiler {
             let input = fs::read_to_string(&file.path).into_diagnostic()?;
             let relative_path: PathBuf =
                 file.path.components().skip(base_component_count).collect();
-            let mut output_path = self.dst.join(&relative_path);
+            let mut output_path = project_cache.join(&relative_path);
             output_path.set_extension("html");
 
             let output_dir = output_path
@@ -126,6 +129,6 @@ impl Compiler {
             fs::write(output_path, page_content).into_diagnostic()?;
         }
 
-        Ok(())
+        Ok(project_cache)
     }
 }

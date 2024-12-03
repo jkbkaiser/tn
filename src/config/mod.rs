@@ -7,8 +7,9 @@ use std::{
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct Config {
+    pub name: String,
     pub src: PathBuf,
-    pub dst: PathBuf,
+    pub assets: Option<PathBuf>,
 }
 
 impl Config {
@@ -22,9 +23,12 @@ impl Config {
         absolute_config_dir.pop();
 
         let relative_src = config.src.components().last().unwrap();
-        let relative_dst = config.dst.components().last().unwrap();
         config.src = absolute_config_dir.join(relative_src);
-        config.dst = absolute_config_dir.join(relative_dst);
+
+        if config.assets.is_none() {
+            let assets_dir = crate::get_assets_dir();
+            config.assets = Some(assets_dir);
+        }
 
         Ok(config)
     }

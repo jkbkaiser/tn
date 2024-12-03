@@ -1,9 +1,8 @@
 // TODO:
 // - Make as executable everywhere
 // - File navigation
+// - Extract template, compilation, cache
 // - Hot reloading with cache in ~/.tn
-// - Add favicon
-// - Extract template
 // - Print error msg when not found https://docs.rs/axum/latest/axum/error_handling/index.html
 // - (Support both absolute and relative paths in config)
 use clap::Parser;
@@ -18,18 +17,25 @@ use tn::server::{Server, ServerOpt};
 #[command(version, about, long_about = None)]
 struct Args {
     /// Path to the configuration file
-    #[arg(short, long)]
-    #[arg(short, long, default_value = "./example/config.toml")]
+    #[arg(short, long, default_value = "./config.toml")]
     config: PathBuf,
+
+    /// Port on which to serve content
+    #[arg(short, long, default_value_t = 8080)]
+    port: u16,
 }
 
 #[tokio::main]
 async fn main() -> miette::Result<()> {
     let args = Args::parse();
 
+    let cache_dir = tn::get_cache_dir();
+
     let config = Config::parse(Path::new(&args.config))?;
     let files = crawler::crawl(&config.src)?;
 
-    Compiler::new(config.src, config.dst.clone()).compile(files)?;
-    Server::new(ServerOpt::new(8080, config.dst)).serve().await
+    let root = Compiler::new(config.src, cache_dir, config.name).compile(files)?;
+    Server::new(ServerOpt::new(args.port, root, config.assets.unwrap()))
+        .serve()
+        .await
 }

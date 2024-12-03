@@ -1,0 +1,4 @@
+cargo install --path .
+
+mkdir -p ~/.tn
+cp -r ./assets ~/.tn
