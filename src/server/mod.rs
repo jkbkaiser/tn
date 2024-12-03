@@ -1,7 +1,9 @@
-use axum::{extract::Path, response::Html, routing::get, Router};
+use axum::{routing::get_service, Router};
 use miette::{IntoDiagnostic, Result};
-use std::{fs, path::PathBuf};
+use std::net::SocketAddr;
+use std::path::PathBuf;
 use tokio::net::TcpListener;
+use tower_http::services::ServeDir;
 
 pub struct ServerOpt {
     port: u16,
@@ -28,33 +30,34 @@ pub struct Server {
     options: ServerOpt,
 }
 
-async fn index(src: PathBuf) -> String {
-    println!("index {src:?}");
-    "Hello, World".to_string()
-}
-
-async fn handle(src: PathBuf, Path(path): Path<String>) -> Html<String> {
-    let file_path = src.join(path);
-    let html = fs::read_to_string(file_path).unwrap();
-    Html(html)
-}
-
 impl Server {
     pub fn new(options: ServerOpt) -> Self {
         Server { options }
     }
 
     pub async fn serve(self) -> Result<()> {
-        let src = self.options.src.clone();
-        println!("src: {src:?}");
+        let asset_service = get_service(ServeDir::new("./assets")).handle_error(|err| async move {
+            (
+                axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                format!("Unhandled internal error: {}", err),
+            )
+        });
+
+        let markdown_service =
+            get_service(ServeDir::new(self.options.src)).handle_error(|err| async move {
+                (
+                    axum::http::StatusCode::INTERNAL_SERVER_ERROR,
+                    format!("Unhandled internal error: {}", err),
+                )
+            });
 
         let app = Router::new()
-            .route("/", get(move || index(src)))
-            .route("/*key", get(move |a| handle(self.options.src, a)));
+            .nest_service("/assets", asset_service)
+            .nest_service("/", markdown_service);
 
-        let addr = format!("127.0.0.1:{}", self.options.port);
+        let addr = SocketAddr::from(([127, 0, 0, 1], self.options.port));
         let listener = TcpListener::bind(&addr).await.into_diagnostic()?;
-        println!("Listing on http://{addr}");
+        println!("Listening on http://{}", addr);
 
         axum::serve(listener, app).await.into_diagnostic()
     }

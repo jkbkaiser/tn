@@ -1,4 +1,4 @@
-use miette::{IntoDiagnostic, Result};
+use miette::{miette, IntoDiagnostic, Result};
 use serde::{Deserialize, Serialize};
 use std::{
     fs,
@@ -13,8 +13,10 @@ pub struct Config {
 
 impl Config {
     pub fn parse<P: AsRef<Path>>(path: P) -> Result<Self> {
-        let contents = fs::read_to_string(&path).into_diagnostic()?;
-        let mut config: Config = toml::from_str(&contents).into_diagnostic()?;
+        let contents = fs::read_to_string(&path)
+            .map_err(|err| miette!("Could not parse config file: {err}"))?;
+        let mut config: Config = toml::from_str(&contents)
+            .map_err(|err| miette!("Could not parse config file: {err}"))?;
 
         let mut absolute_config_dir = path.as_ref().canonicalize().into_diagnostic()?;
         absolute_config_dir.pop();
