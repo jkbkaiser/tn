@@ -407,7 +407,12 @@ h1 {
 
 p {
   font-family: "Roboto";
+  font-size: var(--text-base);
   color: var(--color-slate-900);
+}
+
+a {
+  text-decoration: none;
 }
 
 #navbar {
@@ -423,7 +428,6 @@ p {
   font-weight: 500;
   font-size: var(--text-xl);
   color: var(--color-slate-900);
-  font-style: italic;
 }
 
 #content {

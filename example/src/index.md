@@ -1,5 +1,7 @@
 # This is the index
 
+[test](./blabla/a.html)
+
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin id gravida odio. In maximus justo et elit ultricies, ut elementum lectus egestas. Maecenas non massa quis odio elementum fringilla. Nam malesuada est et interdum pharetra. Cras aliquam sapien eget nulla tincidunt egestas. Duis rhoncus at lorem sed mollis. Donec eu diam blandit, blandit nisl ut, euismod augue.
 
 Nunc at bibendum ex. Ut a sem leo. Duis molestie odio ut libero pulvinar, vel egestas lorem sagittis. Nulla ut neque nisi. Curabitur pharetra arcu ligula, a ultricies lacus fringilla eget. Maecenas tincidunt pretium leo vitae mollis. Praesent sed erat ipsum. Morbi eget metus facilisis, euismod justo non, commodo ligula. Praesent dignissim, est sit amet pellentesque facilisis, odio dui ornare ante, efficitur facilisis lectus leo viverra orci. Cras venenatis turpis tellus, nec sollicitudin ipsum placerat at. Suspendisse vel porta erat. Sed venenatis sapien et rhoncus vestibulum. Curabitur a sem ultricies, rhoncus augue nec, tempor nisl. Nulla at aliquam ligula.

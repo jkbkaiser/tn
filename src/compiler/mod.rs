@@ -1,6 +1,6 @@
 use crate::crawler::CrawledFile;
 use miette::{miette, IntoDiagnostic, Result};
-use pulldown_cmark::{Options, Parser};
+use pulldown_cmark::{Event, LinkType, Options, Parser, Tag};
 use std::{fs, path::PathBuf};
 
 const STYLES: &str = "
@@ -22,7 +22,7 @@ fn create_head() -> String {
 
 fn create_navbar() -> String {
     let mut navbar = String::from("");
-    let navbar_header = "<p id='navbar-header'>Thesis notes</p>";
+    let navbar_header = "<a href='/'><p id='navbar-header'>Thesis notes</p></a>";
 
     navbar.push_str("<div id='navbar'>");
     navbar.push_str(navbar_header);
@@ -91,8 +91,35 @@ impl Compiler {
 
             let parser = Parser::new_ext(&input, Options::empty());
 
+            let transformed = parser.map(|event| match event {
+                Event::Start(Tag::Link {
+                    link_type,
+                    dest_url,
+                    title,
+                    id,
+                }) => {
+                    if link_type == LinkType::Inline {
+                        let new_dest_url = dest_url.replace(".md", ".html");
+                        Event::Start(Tag::Link {
+                            link_type,
+                            dest_url: new_dest_url.into(),
+                            title,
+                            id,
+                        })
+                    } else {
+                        Event::Start(Tag::Link {
+                            link_type,
+                            dest_url,
+                            title,
+                            id,
+                        })
+                    }
+                }
+                other => other,
+            });
+
             let mut html_content = String::new();
-            pulldown_cmark::html::push_html(&mut html_content, parser);
+            pulldown_cmark::html::push_html(&mut html_content, transformed);
 
             let page_content = create_page(html_content);
 

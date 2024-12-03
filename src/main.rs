@@ -1,14 +1,11 @@
 // TODO:
-// - Support both absolute and relative paths in config
 // - Make as executable everywhere
-// - Cache in ~/.tn
 // - File navigation
-// - Link fixed stylesheet
-// - Resolve references
-// - Hot reloading
-// - Print error msg when not found https://docs.rs/axum/latest/axum/error_handling/index.html
+// - Hot reloading with cache in ~/.tn
 // - Add favicon
 // - Extract template
+// - Print error msg when not found https://docs.rs/axum/latest/axum/error_handling/index.html
+// - (Support both absolute and relative paths in config)
 use clap::Parser;
 use std::path::{Path, PathBuf};
 
