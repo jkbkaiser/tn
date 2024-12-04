@@ -1,11 +1,11 @@
 // TODO:
-// - File navigation
-// - Extract generation, cache
-// - Hot reloading with cache in ~/.tn
 // - Print error msg when not found https://docs.rs/axum/latest/axum/error_handling/index.html
 // - (Support both absolute and relative paths in config)
 use clap::Parser;
+use miette::IntoDiagnostic;
+use notify::{Event, EventKind, RecursiveMode, Result, Watcher};
 use std::path::{Path, PathBuf};
+use std::sync::mpsc;
 
 use tn::config::Config;
 use tn::crawler;
@@ -26,6 +26,10 @@ struct Args {
     /// Port on which to serve content
     #[arg(short, long, default_value_t = 8080)]
     port: u16,
+
+    /// Specified whether to reload on changes
+    #[arg(short, long, default_value_t = false)]
+    watch: bool,
 }
 
 #[tokio::main]
@@ -37,7 +41,40 @@ async fn main() -> miette::Result<()> {
     let config = Config::parse(Path::new(&args.config))?;
     let files = crawler::crawl(&config.src)?;
 
-    let root = Generator::new(config.src, cache_dir, config.name).generate(files)?;
+    let mut generator = Generator::new(
+        config.src.clone(),
+        cache_dir.clone(),
+        config.name.clone(),
+        args.watch,
+    )?;
+    generator.generate(&files)?;
+
+    let (tx, rx) = mpsc::channel::<Result<Event>>();
+    let mut watcher = notify::recommended_watcher(tx).into_diagnostic()?;
+    watcher
+        .watch(Path::new(&config.src), RecursiveMode::Recursive)
+        .into_diagnostic()?;
+
+    tokio::spawn(async move {
+        println!("test");
+        for event in rx {
+            match event {
+                Ok(Event {
+                    kind: EventKind::Modify(_),
+                    paths,
+                    attrs,
+                }) => {
+                    generator
+                        .generate(&paths)
+                        .expect("Could not generate files");
+                }
+                Err(e) => println!("watch error: {:?}", e),
+                _ => {}
+            }
+        }
+    });
+
+    let root = cache_dir.join(config.name);
     Server::new(ServerOpt::new(args.port, root, config.assets.unwrap()))
         .serve()
         .await

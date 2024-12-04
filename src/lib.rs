@@ -1,6 +1,7 @@
 use home::home_dir;
 use std::path::PathBuf;
 
+pub mod cache;
 pub mod config;
 pub mod crawler;
 pub mod generator;

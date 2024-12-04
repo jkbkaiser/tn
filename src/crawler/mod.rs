@@ -43,12 +43,12 @@ fn recursive_crawl<P: AsRef<Path>>(path: P) -> Result<CrawledDir> {
     Ok(CrawledDir { entries: elements })
 }
 
-fn flatten(dir: CrawledDir) -> Vec<CrawledFile> {
+fn flatten(dir: CrawledDir) -> Vec<PathBuf> {
     let mut elements = Vec::new();
 
     for entry in dir.entries {
         match entry {
-            CrawledEntry::File(crawled_file) => elements.push(crawled_file),
+            CrawledEntry::File(crawled_file) => elements.push(crawled_file.path),
             CrawledEntry::Dir(crawled_dir) => elements.extend(flatten(crawled_dir)),
         }
     }
@@ -56,6 +56,6 @@ fn flatten(dir: CrawledDir) -> Vec<CrawledFile> {
     elements
 }
 
-pub fn crawl<P: AsRef<Path>>(path: P) -> Result<Vec<CrawledFile>> {
+pub fn crawl<P: AsRef<Path>>(path: P) -> Result<Vec<PathBuf>> {
     Ok(flatten(recursive_crawl(path)?))
 }

@@ -406,6 +406,7 @@ main {
   width: 300px;
   background: var(--color-slate-200);
   padding: 25px;
+  counter-reset: main-item;
 }
 
 #navbar h1 {
@@ -442,9 +443,12 @@ main {
   color: var(--color-slate-900);
 }
 
+#navbar a:hover {
+  text-decoration: underline;
+}
+
 #navbar ul {
   list-style: none;
-  counter-reset: main-item;
   margin: 0;
   padding: 0;
 }
@@ -478,7 +482,7 @@ main {
 }
 
 #navbar ul li ul li ul {
-  counter-reset: main-item;
+  counter-reset: sub-sub-item;
 }
 
 #navbar ul li ul li ul li::before {
@@ -488,7 +492,7 @@ main {
 }
 
 #navbar ul li ul li ul li ul {
-  counter-reset: main-item;
+  counter-reset: sub-sub-sub-item;
 }
 
 #navbar ul li ul li ul li ul li::before {
@@ -517,4 +521,8 @@ main {
 
 #content a {
   text-decoration: none;
+}
+
+#content a:hover {
+  text-decoration: underline;
 }
