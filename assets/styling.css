@@ -390,7 +390,7 @@
 html,
 body,
 main {
-  background: var(--color-slate-50);
+  background: var(--color-white);
   padding: 0;
   margin: 0;
   top: 0;
@@ -403,16 +403,16 @@ main {
   top: 0;
   position: fixed;
   height: 100vh;
-  width: 300px;
-  background: var(--color-slate-200);
-  padding: 25px;
+  width: 200px;
+  background: var(--color-neutral-100);
+  padding: 25px 50px;
   counter-reset: main-item;
 }
 
 #navbar h1 {
-  font-family: "Roboto";
+  font-family: "Libre baskerville";
   font-size: var(--text-2xl);
-  color: var(--color-slate-900);
+  color: var(--color-black);
 }
 
 #navbar h2 {
@@ -420,7 +420,7 @@ main {
   margin-top: 20px;
   font-family: "Roboto";
   font-size: var(--text-xl);
-  color: var(--color-slate-900);
+  color: var(--color-black);
 }
 
 #navbar h3 {
@@ -428,19 +428,18 @@ main {
   margin-top: 20px;
   font-family: "Roboto";
   font-size: var(--text-base);
-  color: var(--color-slate-900);
+  color: var(--color-black);
 }
 
 #navbar p {
   font-family: "Roboto";
   font-size: var(--text-base);
-  color: var(--color-slate-900);
+  color: var(--color-black);
 }
 
 #navbar a {
-  font-family: "Roboto";
   text-decoration: none;
-  color: var(--color-slate-900);
+  color: var(--color-black);
 }
 
 #navbar a:hover {
@@ -459,7 +458,11 @@ main {
   padding-top: 5px;
   font-family: "Roboto";
   font-size: var(--text-base);
-  color: var(--color-slate-900);
+  color: var(--color-black);
+}
+
+#navbar ul a {
+  font-family: "Roboto";
 }
 
 #navbar > ul > li {
@@ -505,18 +508,35 @@ main {
   margin-left: 300px;
   width: calc(100vw-300px);
   padding: 10px 200px;
+  background-color: var(--color-white);
 }
 
 #content h1 {
-  font-family: "Roboto";
+  font-family: "Libre Baskerville";
+  font-weight: bold;
   font-size: var(--text-4xl);
-  color: var(--color-slate-900);
+  color: var(--color-black);
+}
+
+#content h2 {
+  font-family: "Libre Baskerville";
+  font-size: var(--text-2xl);
+  color: var(--color-black);
+  margin-bottom: 4px;
+}
+
+#content h3 {
+  font-family: "Libre Baskerville";
+  font-size: var(--text-xl);
+  color: var(--color-black);
+  margin-bottom: 2px;
 }
 
 #content p {
   font-family: "Roboto";
   font-size: var(--text-base);
-  color: var(--color-slate-900);
+  color: var(--color-black);
+  margin-top: 0px;
 }
 
 #content a {
@@ -525,4 +545,27 @@ main {
 
 #content a:hover {
   text-decoration: underline;
+}
+
+#content ul {
+  list-style-type: none;
+  padding: 0px 18px;
+}
+
+#content > ul {
+  padding: 0px 4px;
+}
+
+#content li {
+  margin: 4px 0px;
+}
+
+#content > ul li {
+  font-family: "Roboto";
+  font-size: var(--text-base);
+  color: var(--color-black);
+}
+
+#content li::before {
+  content: "- ";
 }

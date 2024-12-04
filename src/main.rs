@@ -56,7 +56,6 @@ async fn main() -> miette::Result<()> {
         .into_diagnostic()?;
 
     tokio::spawn(async move {
-        println!("test");
         for event in rx {
             match event {
                 Ok(Event {
