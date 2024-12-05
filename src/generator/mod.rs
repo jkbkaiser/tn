@@ -10,7 +10,7 @@ use std::{
 fn parse_markdown_file<P: AsRef<Path>>(file_path: P) -> Result<String> {
     let input = fs::read_to_string(file_path).into_diagnostic()?;
 
-    let parser = Parser::new_ext(&input, Options::empty());
+    let parser = Parser::new_ext(&input, Options::all());
 
     let transformed = parser.map(|event| match event {
         Event::Start(Tag::Link {
